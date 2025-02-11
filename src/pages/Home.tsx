@@ -1,5 +1,9 @@
+import LoggedInHome from "./LoggedInHome";
+import LoggedOutHome from "./LoggedOutHome";
+
 const Home = () => {
-  return <div className="text-3xl">df</div>;
+  const isAuthenticated = false;
+  return <div>{isAuthenticated ? <LoggedInHome /> : <LoggedOutHome />}</div>;
 };
 
 export default Home;

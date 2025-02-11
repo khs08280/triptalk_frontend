@@ -8,4 +8,5 @@ export default {
   arrowParens: "always", // 화살표 함수 매개변수가 하나일 때도 괄호 사용 (always)
   endOfLine: "lf", // 줄바꿈 문자 (LF, CRLF) - 유닉스/리눅스는 lf, 윈도우는 crlf.
   jsxSingleQuote: false, // JSX에서 작은 따옴표 대신 큰 따옴표("") 사용 여부
+  plugins: ["prettier-plugin-tailwindcss"],
 };

@@ -1,6 +1,5 @@
 import { BrowserRouter } from "react-router-dom";
 import Router from "./Router";
-import "./styles/global.css";
 import Nav from "@components/Nav";
 
 function App() {
@@ -8,6 +7,7 @@ function App() {
     <BrowserRouter>
       <Nav />
       <Router />
+      {/* <Footer /> */}
     </BrowserRouter>
   );
 }
