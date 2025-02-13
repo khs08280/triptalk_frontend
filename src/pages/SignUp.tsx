@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
-import { SignUpRequest, SignUpResponse, signUpUser } from "@/utils/api";
+import { SignUpRequest, SignUpResponse, signUpUser } from "@/api/AuthApi";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");

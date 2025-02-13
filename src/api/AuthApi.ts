@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "./api";
 
 export interface SignUpRequest {
   username: string;
@@ -17,15 +17,11 @@ export interface SignUpResponse {
   };
 }
 export const signUpUser = async (newUser: SignUpRequest) => {
-  const response = await axios.post<SignUpResponse>(
-    "http://localhost:8080/api/v1/auth/signup",
-    newUser,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const response = await api.post<SignUpResponse>("/auth/signup", newUser, {
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+  });
 
   if (!response.data.success) {
     throw new Error(response.data.message || "Signup failed");
@@ -53,8 +49,8 @@ export interface LoginResponse {
 }
 
 export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {
-  const response = await axios.post<LoginResponse>(
-    "http://localhost:8080/api/v1/auth/login", // 실제 로그인 API 엔드포인트
+  const response = await api.post<LoginResponse>(
+    "/auth/login", // 실제 로그인 API 엔드포인트
     data,
   );
   if (!response.data.success) {
