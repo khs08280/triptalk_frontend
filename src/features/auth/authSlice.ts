@@ -35,6 +35,18 @@ export const checkSession = createAsyncThunk<
   }
 });
 
+export const checkLogin = createAsyncThunk<User, void, { rejectValue: string }>(
+  "auth/checkLogin",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get<User>("/auth/checkLogin");
+      return res.data; // user 객체
+    } catch (err) {
+      return rejectWithValue("세션이 유효하지 않음");
+    }
+  },
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -64,6 +76,21 @@ const authSlice = createSlice({
         state.user = action.payload; // 서버에서 온 user 정보
       })
       .addCase(checkSession.rejected, (state, action) => {
+        state.loading = false;
+        state.isLoggedIn = false;
+        state.user = null;
+        state.error = action.payload || "로그인 안 됨";
+      })
+      .addCase(checkLogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(checkLogin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isLoggedIn = true;
+        state.user = action.payload; // 서버에서 온 user 정보
+      })
+      .addCase(checkLogin.rejected, (state, action) => {
         state.loading = false;
         state.isLoggedIn = false;
         state.user = null;

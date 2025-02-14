@@ -27,7 +27,9 @@ api.interceptors.response.use(
 
     const { status } = error.response;
     const originalRequest = error.config;
-
+    if (originalRequest.url === "/auth/checkLogin") {
+      return Promise.reject(error);
+    }
     // (1) 401 오류 처리
     if (status === 401) {
       // (a) 만약 이미 retry 시도한 요청이라면 -> 무한루프 방지 위해 바로 reject

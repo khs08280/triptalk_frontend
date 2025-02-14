@@ -1,15 +1,28 @@
-import Chat from "@components/Chat/Chat";
-import Footer from "@components/Footer";
+import TripCreateModal from "@components/TripCreateModal";
+import { useState } from "react";
+import TripDetail from "./TripDetail";
+import { useNavigate } from "react-router-dom";
 
 const TripCreate = () => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => {
+    navigate("/trip");
+  };
+
   return (
-    <div className="flex h-screen">
-      <Chat />
-      <div className="w-<> flex h-screen grow-1 flex-col justify-between place-self-end bg-blue-400 pt-16 pl-[448px]">
-        <div className="text-3xl">dfdf</div>
-        <Footer />
-      </div>
-    </div>
+    <TripCreateModal onClose={closeModal}>
+      <h2 className="mb-4 text-xl font-bold">모달 제목</h2>
+      <p className="mb-4">여기에 모달 내용을 넣을 수 있어요.</p>
+      <button
+        onClick={closeModal}
+        className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+      >
+        닫기
+      </button>
+    </TripCreateModal>
   );
 };
 

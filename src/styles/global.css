@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+@theme {
+  --header-height: 4rem;
+}

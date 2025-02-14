@@ -3,9 +3,9 @@ import Footer from "@components/Footer";
 
 const LoggedInHome = () => {
   return (
-    <div className="h-screen flex">
+    <div className="flex h-screen">
       <Chat />
-      <div className="flex grow-1 flex-col place-self-end bg-blue-400 w-<> h-screen pl-[448px] pt-16 justify-between">
+      <div className="w-<> flex h-screen grow-1 flex-col justify-between place-self-end bg-blue-400 pt-(--header-height) pl-[448px]">
         <div className="text-3xl">dfdf</div>
         <Footer />
       </div>

@@ -6,7 +6,12 @@ interface Props {
 }
 
 const PublicRoute: React.FC<Props> = ({ component: Component }) => {
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const { isLoggedIn, loading } = useAppSelector((state) => state.auth);
+
+  if (loading) {
+    return <div>로딩중</div>; // or null
+  }
+
   if (isLoggedIn) {
     return <Navigate to="/" replace />;
   }
