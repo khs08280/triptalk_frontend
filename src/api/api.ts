@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios from "axios";
 
 const api = axios.create({
   baseURL: "https://localhost:8443/api/v1",
@@ -19,40 +19,52 @@ async function requestRefreshToken(): Promise<boolean> {
 
 // 3) Response Interceptor
 api.interceptors.response.use(
-  (response: AxiosResponse) => {
-    // 정상 응답 그대로 반환
-    return response;
-  },
-  async (error: AxiosError) => {
-    // 에러 응답 처리
-    if (error.response && error.response.status === 401) {
-      /**
-       * 401인 경우 → Access Token 만료 등
-       *  1) Refresh Token으로 재발급 요청
-       *  2) 성공하면 원래 요청 재시도
-       *  3) 실패하면 로그인 페이지로 이동
-       */
-
-      // (a) 이미 재시도를 한 번 한 요청인지 체크(무한 루프 방지)
-      const originalRequest = error.config as AxiosRequestConfig & {
-        _retry?: boolean;
-      };
-      if (!originalRequest._retry) {
-        originalRequest._retry = true; // 재시도 플래그
-
-        const success = await requestRefreshToken();
-        if (success) {
-          // (b) 재발급 성공 → 원래 요청을 다시 시도
-          return api(originalRequest);
-        }
-      }
-
-      // (c) 재발급 실패 or 이미 재시도 → 로그인 페이지로 이동
-      window.location.href = "/login";
+  (response) => response,
+  async (error) => {
+    if (!error.response) {
       return Promise.reject(error);
     }
 
-    // 401 외 다른 에러들은 그대로 전달
+    const { status } = error.response;
+    const originalRequest = error.config;
+
+    // (1) 401 오류 처리
+    if (status === 401) {
+      // (a) 만약 이미 retry 시도한 요청이라면 -> 무한루프 방지 위해 바로 reject
+      if (originalRequest._retry) {
+        // 여기서 refresh 요청마저 401이면 -> 로그인 페이지 이동 등
+        window.location.href = "/login";
+        return Promise.reject(error);
+      }
+
+      // (b) refresh API 자체가 401을 뱉은 경우 -> 재시도해봐야 또 401 -> 로그인 이동
+      if (originalRequest.url === "/auth/refresh") {
+        // refresh마저 401이면 토큰 만료, 재로그인 필요
+        window.location.href = "/login";
+        return Promise.reject(error);
+      }
+
+      // (c) 최초 한 번만 재시도
+      originalRequest._retry = true;
+
+      // (d) refreshToken 요청 시도
+      try {
+        const success = await requestRefreshToken();
+        if (!success) {
+          // refresh 실패 -> 로그인 이동
+          window.location.href = "/login";
+          return Promise.reject(error);
+        }
+        // (e) refresh 성공 -> 원래 요청 다시 수행
+        return api(originalRequest);
+      } catch (refreshError) {
+        // refresh 로직 자체 에러 (네트워크 등)
+        window.location.href = "/login";
+        return Promise.reject(refreshError);
+      }
+    }
+
+    // (2) 그 외 에러는 그대로
     return Promise.reject(error);
   },
 );

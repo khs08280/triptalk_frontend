@@ -22,11 +22,10 @@ const Login = () => {
     onSuccess: (data) => {
       console.log("Login successful:", data);
       dispatch(loginSuccess(data.data.user));
-      navigate("/");
+      navigate("/myHome");
     },
     onError: (error: AxiosError) => {
       console.log(error);
-      // 로그인 실패 처리
       setErrorMessage(
         (error.response?.data as LoginResponse)?.message ||
           "An error occurred during login.",

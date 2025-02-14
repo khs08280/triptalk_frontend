@@ -1,9 +1,14 @@
-import LoggedInHome from "./LoggedInHome";
-import LoggedOutHome from "./LoggedOutHome";
+import { useAppSelector } from "@/store/hooks";
+import { Navigate } from "react-router-dom";
 
-const Home = () => {
-  const isAuthenticated = false;
-  return <div>{isAuthenticated ? <LoggedInHome /> : <LoggedOutHome />}</div>;
-};
+function Home() {
+  const isLoggendIn = useAppSelector((state) => state.auth.isLoggedIn);
+
+  if (!isLoggendIn) {
+    return <Navigate to="/intro" replace />;
+  } else {
+    return <Navigate to={"/myHome"} replace />;
+  }
+}
 
 export default Home;
