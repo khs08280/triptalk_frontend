@@ -29,6 +29,8 @@ export const checkSession = createAsyncThunk<
 >("auth/checkSession", async (_, { rejectWithValue }) => {
   try {
     const res = await api.get<User>("/auth/check");
+    console.log("그냥 check");
+
     return res.data; // user 객체
   } catch (err) {
     return rejectWithValue("세션이 유효하지 않음");
@@ -40,6 +42,7 @@ export const checkLogin = createAsyncThunk<User, void, { rejectValue: string }>(
   async (_, { rejectWithValue }) => {
     try {
       const res = await api.get<User>("/auth/checkLogin");
+      console.log("checkLogin");
       return res.data; // user 객체
     } catch (err) {
       return rejectWithValue("세션이 유효하지 않음");

@@ -7,6 +7,7 @@ import PublicRoute from "@components/PublicRoute";
 import TripCreate from "./pages/TripCreate";
 import MyHome from "./pages/MyHome";
 import TripDetail from "./pages/TripDetail";
+import TripLayout from "@components/TripLayout";
 
 const Router = () => {
   const location = useLocation();
@@ -25,7 +26,7 @@ const Router = () => {
         <Route path="/intro" element={<Intro />} />
         <Route path="/login" element={<PublicRoute component={Login} />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/trip" element={<TripDetail />}>
+        <Route path="/trip" element={<TripLayout />}>
           <Route path="create" element={<TripCreate />} />
         </Route>
         <Route path="/myHome" element={<MyHome />} />

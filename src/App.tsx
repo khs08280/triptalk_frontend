@@ -1,7 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import Router from "./Router";
 import Nav from "@components/Nav";
-import { AppDispatch, RootState, store } from "./store/store";
+import { AppDispatch, RootState } from "./store/store";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { useEffect } from "react";
 import {
@@ -13,9 +13,7 @@ import { publicRoutes } from "./allowedPage";
 
 function App() {
   const dispatch = useAppDispatch<AppDispatch>();
-  const { loading, isLoggedIn } = useAppSelector(
-    (state: RootState) => state.auth,
-  );
+  const { loading } = useAppSelector((state: RootState) => state.auth);
   const currentPath = location.pathname;
 
   useEffect(() => {

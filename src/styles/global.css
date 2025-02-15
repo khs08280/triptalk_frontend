@@ -2,4 +2,11 @@
 
 @theme {
   --header-height: 4rem;
+  --font-noto: "Noto Sans KR";
+  --font-noto-kr: "Noto Sans KR", sans-serif;
+  --font-do: "Do Hyeon", sans-serif;
+  --font-nanum: "Nanum Gothic", serif;
+}
+body {
+  font-family: var(--font-nanum);
 }

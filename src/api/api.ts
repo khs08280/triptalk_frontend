@@ -10,6 +10,7 @@ async function requestRefreshToken(): Promise<boolean> {
   try {
     const response = await api.post("/auth/refresh");
     // 응답이 200이면 Access Token 재발급 성공
+    console.log("Refresh");
     return response.status === 200;
   } catch (error) {
     // 재발급 실패

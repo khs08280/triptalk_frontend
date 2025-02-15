@@ -22,7 +22,7 @@ const TripCreateModal: React.FC<ModalProps> = ({ onClose, children }) => {
     >
       <div
         ref={modalRef}
-        className="relative rounded-lg bg-white p-6 shadow-lg"
+        className="relative w-3xl rounded-lg bg-white p-8 py-10 shadow-lg"
       >
         {children}
       </div>

@@ -8,7 +8,7 @@ const Intro = () => {
           실시간으로 채팅하며 여행 계획을 세워 보세요
         </h2>
         <div className="flex items-center justify-center rounded-xl bg-blue-300 px-8 py-3">
-          <Link to={"/tripCreate"}>
+          <Link to={"/login"}>
             <span className="text-2xl">여행 계획 만들기</span>
           </Link>
         </div>

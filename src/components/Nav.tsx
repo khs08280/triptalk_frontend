@@ -22,7 +22,7 @@ const Nav = () => {
   return (
     <header className="fixed top-0 flex h-16 w-full items-center justify-between bg-amber-300 px-12">
       <Link to={"/"}>
-        <span className="text-2xl text-white">트립톡</span>
+        <span className="text-2xl font-bold">트립톡</span>
       </Link>
       <nav className="">
         <ul className="flex w-sm justify-between">

@@ -7,7 +7,7 @@ function Home() {
   if (!isLoggendIn) {
     return <Navigate to="/intro" replace />;
   } else {
-    return <Navigate to={"/myHome"} replace />;
+    return <Navigate to="/trip" replace />;
   }
 }
 
