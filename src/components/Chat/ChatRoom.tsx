@@ -1,8 +1,9 @@
 import { ChatRoomResponse, getChatRooms } from "@/api/ChatApi";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-
-const Chat = () => {
+import ChatRoomLi from "./ChatRoomLi";
+import ControlPointRoundedIcon from "@mui/icons-material/ControlPointRounded";
+const ChatRoom = () => {
   const {
     data: chatRooms,
     isLoading,
@@ -23,13 +24,13 @@ const Chat = () => {
 
   return (
     <div className="fixed top-16 h-screen w-md bg-amber-600 p-4">
-      <div className="text-xl">채팅</div>
+      <div className="text-xl">채팅방 목록</div>
       <div className="flex justify-center">
         <Link
           to="create"
           className="flex w-full items-center rounded border-2 border-blue-600 bg-white px-4 py-2 hover:bg-blue-200"
         >
-          <span className="material-symbols-outlined mr-4">add_circle</span>
+          <ControlPointRoundedIcon className="mr-2" />
           여행계획과 채팅방 생성하기
         </Link>
       </div>
@@ -37,9 +38,7 @@ const Chat = () => {
       {chatRooms && chatRooms.data.length > 0 ? (
         <ul>
           {chatRooms.data.map((room) => (
-            <li key={room.chatRoomId}>
-              <Link to={`/trip/${room.tripId}`}>{room.title}</Link>
-            </li>
+            <ChatRoomLi {...room} />
           ))}
         </ul>
       ) : (
@@ -49,4 +48,4 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default ChatRoom;

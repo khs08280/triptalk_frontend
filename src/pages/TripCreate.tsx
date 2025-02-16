@@ -17,6 +17,7 @@ import {
   Visibility,
 } from "@/api/TripApi";
 import { AxiosError } from "axios";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 const TripCreate = () => {
   const {
@@ -68,7 +69,7 @@ const TripCreate = () => {
           onClick={closeModal}
           className="material-symbols-rounded h-fit w-auto cursor-pointer rounded-lg p-1 hover:bg-blue-100 hover:opacity-70"
         >
-          close
+          <CloseRoundedIcon />
         </span>
       </div>
 

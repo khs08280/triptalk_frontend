@@ -1,12 +1,12 @@
 import api from "@/api/api";
 import { logoutState } from "@/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Nav = () => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
-
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
@@ -14,6 +14,7 @@ const Nav = () => {
       await api.post("/users/logout");
       // 2) 클라이언트 전역 상태 리셋
       dispatch(logoutState());
+      navigate("/");
     } catch (error) {
       console.error(error);
     }

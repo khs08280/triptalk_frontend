@@ -3,13 +3,13 @@ import api from "./api";
 export interface ChatRoomResponse {
   success: boolean;
   message: string;
-  data: [
-    {
-      chatRoomId: number;
-      tripId: number;
-      title: string;
-    },
-  ];
+  data: [ChatRoom];
+}
+export interface ChatRoom {
+  chatRoomId: number;
+  tripId: number;
+  title: string;
+  location: string;
 }
 
 export const getChatRooms = async (): Promise<ChatRoomResponse> => {
