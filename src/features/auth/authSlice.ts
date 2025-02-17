@@ -1,11 +1,12 @@
 import api from "@/api/api";
+import { LoginResponse } from "@/api/AuthApi";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface User {
   id: number;
   username: string;
   nickname: string;
-  email?: string;
+  email: string;
 }
 
 interface AuthState {
@@ -28,10 +29,10 @@ export const checkSession = createAsyncThunk<
   { rejectValue: string }
 >("auth/checkSession", async (_, { rejectWithValue }) => {
   try {
-    const res = await api.get<User>("/auth/check");
+    const res = await api.get<LoginResponse>("/auth/check");
     console.log("그냥 check");
 
-    return res.data; // user 객체
+    return res.data.data; // user 객체
   } catch (err) {
     return rejectWithValue("세션이 유효하지 않음");
   }

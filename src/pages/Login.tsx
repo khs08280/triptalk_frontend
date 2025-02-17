@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch } from "@/store/hooks";
 import { AxiosError } from "axios";
 import { loginSuccess } from "@/features/auth/authSlice";
 import { LoginRequest, LoginResponse, loginUser } from "@/api/AuthApi";
@@ -14,7 +14,6 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
 
   const mutation = useMutation<LoginResponse, AxiosError, LoginRequest>({
     mutationFn: async (loginData: LoginRequest) => {
@@ -23,7 +22,7 @@ const Login = () => {
 
     onSuccess: (data) => {
       console.log("Login successful:", data);
-      dispatch(loginSuccess(data.data.user));
+      dispatch(loginSuccess(data.data));
       navigate("/myHome");
       console.log("Login successful:", data, store.getState().auth.isLoggedIn);
     },
