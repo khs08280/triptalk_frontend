@@ -38,7 +38,7 @@ const ChatRoom = () => {
       {chatRooms && chatRooms.data.length > 0 ? (
         <ul>
           {chatRooms.data.map((room) => (
-            <ChatRoomLi {...room} />
+            <ChatRoomLi key={room.chatRoomId} {...room} />
           ))}
         </ul>
       ) : (

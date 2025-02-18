@@ -26,26 +26,24 @@ export interface Message {
   sentAt: string;
 }
 
-interface MessagesResponse {
+export interface MessagesResponse {
   messages: Message[];
-  nextPage: number | null;
+  hasMore: boolean | null;
 }
 
 interface GetMessagesParams {
   pageParam?: number;
-  queryKey: string[];
+  queryKey: (string | undefined)[];
 }
 
-// API 호출 함수: pageParam을 사용해 페이지별 데이터를 가져옴
 export const getMessages = async ({
-  pageParam,
+  pageParam = 0, // ✅ 기본값 설정
   queryKey,
 }: GetMessagesParams): Promise<MessagesResponse> => {
-  // queryKey 배열의 두 번째 요소가 roomId입니다.
-  const roomId = queryKey[1];
-  const response = await api.get<MessagesResponse>("/chatMessages", {
+  const [, roomId] = queryKey;
+  // ✅ pageParam을 사용하여 요청
+  const response = await api.get<MessagesResponse>(`/chatMessages/${roomId}`, {
     params: {
-      roomId,
       page: pageParam,
     },
   });
