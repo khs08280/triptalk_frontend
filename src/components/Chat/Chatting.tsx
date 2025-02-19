@@ -7,27 +7,24 @@ import { useAppSelector } from "@/store/hooks";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import { Message, MessagesResponse } from "@/api/ChatApi";
 import { useInView } from "react-intersection-observer";
-import {
-  InfiniteData,
-  QueryFunctionContext,
-  useInfiniteQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+
+const MESSAGE_SIZE = 30;
 
 const Chatting = () => {
   const { roomId } = useParams<{ roomId: string }>();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState<string>();
+  const [newMessage, setNewMessage] = useState("");
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [showNewMessage, setShowNewMessage] = useState(false);
+  const [nextCursor, setNextCursor] = useState<number | null>();
 
   const { ref, inView } = useInView();
-  const queryClient = useQueryClient();
   const userId = useAppSelector((state) => state.auth.user?.id);
   const containerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const loadingRef = useRef(false); // 추가: 로딩 중인지 여부
 
   useEffect(() => {
     const newSocket = io("wss://localhost:9093", {
@@ -41,7 +38,17 @@ const Chatting = () => {
     setSocket(newSocket);
 
     newSocket.emit("join_room", { roomId, userId });
-    setTimeout(handleScrollToBottom, 50);
+    newSocket.on("load_first_messages", (msgs: MessagesResponse) => {
+      console.log(msgs);
+      setMessages(msgs.messages);
+      setNextCursor(msgs.nextPage);
+      setTimeout(() => {
+        if (messagesEndRef.current) {
+          messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 10);
+    });
+
     return () => {
       newSocket.disconnect();
     };
@@ -93,102 +100,38 @@ const Chatting = () => {
     setShowScrollButton(false);
     setShowNewMessage(false);
   };
-  // useEffect(() => {
-  //   if (!socket) return;
 
-  //   socket.on("receive_message", (msg: Message) => {
-  //     queryClient.setQueryData<InfiniteData<MessagesResponse>>(
-  //       ["messages", roomId],
-  //       (oldData) => {
-  //         if (!oldData) {
-  //           return {
-  //             pages: [{ messages: [msg], hasMore: true }],
-  //             pageParams: [null],
-  //           };
-  //         }
+  const getMoreMessages = () => {
+    if (!socket || loadingRef.current || nextCursor == null) return;
+    loadingRef.current = true;
+    console.log("get메세지 실행");
+    socket?.emit("get_more_messages", {
+      roomId,
+      oldestMessageId: nextCursor,
+      size: MESSAGE_SIZE,
+    });
 
-  //         const newPages = [...oldData.pages];
-  //         if (newPages.length > 0) {
-  //           newPages[newPages.length - 1] = {
-  //             ...newPages[newPages.length - 1],
-  //             messages: [...newPages[newPages.length - 1].messages, msg],
-  //             hasMore: newPages[newPages.length - 1].hasMore, // hasMore 값을 유지
-  //           };
-  //         } else {
-  //           newPages.push({ messages: [msg], hasMore: true });
-  //         }
-  //         return {
-  //           ...oldData,
-  //           pages: newPages,
-  //           pageParams: [...oldData.pageParams],
-  //         }; // pageParams도 복사
-  //       },
-  //     );
-
-  //     if (msg.senderId === userId) {
-  //       setTimeout(() => {
-  //         if (messagesEndRef.current) {
-  //           messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-  //         }
-  //       }, 0);
-  //     } else if (!isAtBottom) {
-  //       setShowNewMessage(true);
-  //     }
-  //   });
-
-  //   return () => {
-  //     socket.off("receive_message");
-  //   };
-  // }, [socket, userId, isAtBottom, roomId, queryClient]);
-
-  // const fetchMessages = async (
-  //   context: QueryFunctionContext<
-  //     ["messages", string | undefined],
-  //     string | null
-  //   >,
-  // ): Promise<MessagesResponse> => {
-  //   const { pageParam } = context;
-  //   return new Promise((resolve, reject) => {
-  //     if (!socket || !roomId) {
-  //       resolve({ messages: [], hasMore: false });
-  //       return;
-  //     }
-  //     // roomId가 undefined가 아님을 명시적으로 나타냄 (타입 가드)
-  //     socket.emit("get_more_messages", {
-  //       roomId: roomId,
-  //       oldestMessageId: pageParam,
-  //     });
-
-  //     socket.once("load_old_messages", (data: MessagesResponse) => {
-  //       resolve(data);
-  //     });
-
-  //     setTimeout(() => {
-  //       reject(new Error("Timeout"));
-  //     }, 5000);
-  //   });
-  // };
-
-  // const {
-  //   data,
-  //   error,
-  //   fetchNextPage,
-  //   hasNextPage,
-  //   isFetching,
-  //   isFetchingNextPage,
-  //   status,
-  // } = useInfiniteQuery<MessagesResponse, Error>({
-  //   queryKey: ["messages", roomId],
-  //   queryFn: fetchMessages, // roomId 제거
-  //   initialPageParam: null,
-  //   getNextPageParam: (lastPage) => {
-  //     return lastPage.messages.length > 0
-  //       ? lastPage.messages[lastPage.messages.length - 1].id
-  //       : undefined;
-  //   },
-  //   refetchOnWindowFocus: false,
-  //   enabled: !!roomId,
-  // });
+    socket?.once("load_old_messages", (msgs: MessagesResponse) => {
+      console.log(msgs);
+      setNextCursor(msgs.nextPage);
+      setMessages((prev) => {
+        const newMessages = msgs.messages.filter(
+          (newMessage) =>
+            !prev.some(
+              (existingMessage) => existingMessage.id === newMessage.id,
+            ),
+        );
+        return [...newMessages, ...prev];
+      });
+      loadingRef.current = false;
+    });
+  };
+  useEffect(() => {
+    console.log(inView);
+    if (inView) {
+      getMoreMessages();
+    }
+  }, [inView]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -206,14 +149,6 @@ const Chatting = () => {
       return () => container.removeEventListener("scroll", handleScroll);
     }
   }, []);
-  const isFirstRender = useRef(true);
-
-  useEffect(() => {
-    if (isFirstRender.current && messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      isFirstRender.current = false;
-    }
-  }, []);
 
   return (
     <div className="fixed top-16 flex h-screen w-md flex-col bg-amber-600">
@@ -229,7 +164,7 @@ const Chatting = () => {
           className="flex h-[34rem] flex-col space-y-4 overflow-y-auto p-4"
           ref={containerRef}
         >
-          <div ref={ref} className="h-1" />
+          <div ref={ref} className="h-40" />
           <div className="relative p-4">
             {messages.map((message) => {
               const isMyMessage = message.senderId === userId;

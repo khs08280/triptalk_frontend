@@ -30,7 +30,7 @@ const Login = () => {
       console.log(error);
       setErrorMessage(
         (error.response?.data as LoginResponse)?.message ||
-          "An error occurred during login.",
+          "로그인 도중 알 수 없는 에러가 발생했습니다.",
       );
     },
   });
@@ -82,7 +82,7 @@ const Login = () => {
         </div>
         <button
           type="submit"
-          className="w-full rounded-lg bg-blue-500 py-2 text-white hover:bg-blue-600"
+          className="w-full cursor-pointer rounded-lg bg-blue-500 py-2 text-white hover:bg-blue-600"
           disabled={mutation.isPending} // 로딩 중일 때 버튼 비활성화
         >
           {mutation.isPending ? "로그인 중..." : "로그인"}

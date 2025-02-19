@@ -28,7 +28,7 @@ export interface Message {
 
 export interface MessagesResponse {
   messages: Message[];
-  hasMore: boolean | null;
+  nextPage: number | null;
 }
 
 interface GetMessagesParams {
