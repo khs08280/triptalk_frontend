@@ -24,7 +24,7 @@ const Chatting = () => {
   const userId = useAppSelector((state) => state.auth.user?.id);
   const containerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const loadingRef = useRef(false); // 추가: 로딩 중인지 여부
+  const loadingRef = useRef(false);
 
   useEffect(() => {
     const newSocket = io("wss://localhost:9093", {
@@ -151,20 +151,22 @@ const Chatting = () => {
   }, []);
 
   return (
-    <div className="fixed top-16 flex h-screen w-md flex-col bg-amber-600">
-      <header className="flex justify-between bg-blue-300 p-4">
+    <div className="fixed top-16 flex h-screen w-md flex-col bg-gray-200">
+      <header className="flex h-16 justify-between bg-blue-300 p-4">
         <Link to="/trip">
           <ArrowBackIcon />
         </Link>
         <div className="text-xl">{userId}</div>
         <MenuRoundedIcon />
       </header>
-      <main className="flex-grow px-4 pr-1 pb-0">
+      <main className="flex h-[calc(100vh-7rem)] flex-col">
+        {" "}
+        {/* 변경된 부분: flex, flex-col, h-screen */}
         <div
-          className="flex h-[34rem] flex-col space-y-4 overflow-y-auto p-4"
+          className="relative flex-grow overflow-y-auto p-4" // 변경된 부분: flex-grow, padding 등 불필요한 h-[34rem] 삭제
           ref={containerRef}
         >
-          <div ref={ref} className="h-40" />
+          <div ref={ref} className="absolute top-40 h-1" />
           <div className="relative p-4">
             {messages.map((message) => {
               const isMyMessage = message.senderId === userId;
@@ -179,7 +181,7 @@ const Chatting = () => {
                     className={`relative mb-1 w-fit max-w-3/4 rounded-xl p-3 ${
                       isMyMessage
                         ? "ml-auto bg-blue-300 before:absolute before:top-[10px] before:right-[-10px] before:rotate-[0deg] before:rounded-sm before:border-[12px] before:border-transparent before:border-t-blue-300 before:border-r-transparent before:border-l-transparent"
-                        : "mr-auto bg-gray-200 before:absolute before:top-[10px] before:left-[-10px] before:rotate-[0deg] before:rounded-sm before:border-[12px] before:border-transparent before:border-t-gray-200 before:border-r-transparent before:border-l-transparent"
+                        : "mr-auto bg-red-200 before:absolute before:top-[10px] before:left-[-10px] before:rotate-[0deg] before:rounded-sm before:border-[12px] before:border-transparent before:border-t-red-200 before:border-r-transparent before:border-l-transparent"
                     }`}
                   >
                     <div className="message-content break-words whitespace-pre-wrap text-gray-800">
@@ -198,7 +200,7 @@ const Chatting = () => {
             <div ref={messagesEndRef} />
           </div>
         </div>
-        <div className="relative flex flex-col pr-3">
+        <div className="relative flex flex-col">
           {showNewMessage && (
             <button
               onClick={handleScrollToBottom}
@@ -216,18 +218,26 @@ const Chatting = () => {
             </button>
           )}
 
-          <textarea
-            className="h-34 w-full bg-white p-4"
-            placeholder="메시지를 입력하세요..."
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-          ></textarea>
-          <button
-            className="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white"
-            onClick={handleSendMessage}
-          >
-            전송
-          </button>
+          <div className="relative w-full">
+            <textarea
+              className="h-40 w-full resize-none bg-white p-4 pr-12 leading-5 outline-0" // 오른쪽 패딩 추가 (pr-12)
+              placeholder="메시지를 입력하세요..."
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSendMessage();
+                }
+              }}
+            ></textarea>
+            <button
+              className="absolute right-4 bottom-6 cursor-pointer rounded bg-blue-500 px-4 py-2 text-white"
+              onClick={handleSendMessage}
+            >
+              전송
+            </button>
+          </div>
         </div>
       </main>
     </div>

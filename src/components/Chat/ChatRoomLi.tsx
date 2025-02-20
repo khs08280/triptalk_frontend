@@ -6,7 +6,7 @@ const ChatRoomLi = (chatRoom: ChatRoom) => {
     <Link to={`/trip/${chatRoom.chatRoomId}`}>
       <li
         key={chatRoom.chatRoomId}
-        className="flex w-full justify-between border-b-2 border-gray-300 bg-amber-200 p-2 py-4 transition-all hover:bg-amber-300"
+        className="flex w-full justify-between border-b-2 border-gray-300 bg-blue-200 p-4 py-8 transition-all hover:bg-blue-300"
       >
         <span>{chatRoom.title}</span>
         <span>{chatRoom.location}</span>
