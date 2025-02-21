@@ -24,7 +24,7 @@ const ChatRoom = () => {
 
   return (
     <div className="fixed top-16 h-screen w-md bg-green-500 p-4">
-      <div className="text-xl">채팅방 목록</div>
+      <div className="mb-5 text-2xl">채팅방 목록</div>
       <div className="flex justify-center">
         <Link
           to="create"

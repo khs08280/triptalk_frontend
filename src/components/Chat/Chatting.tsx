@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { useEffect, useRef, useState } from "react";
@@ -7,6 +7,7 @@ import { useAppSelector } from "@/store/hooks";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import { Message, MessagesResponse } from "@/api/ChatApi";
 import { useInView } from "react-intersection-observer";
+import formatDate from "@/utils/formatData";
 
 const MESSAGE_SIZE = 30;
 
@@ -19,6 +20,9 @@ const Chatting = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [nextCursor, setNextCursor] = useState<number | null>();
+
+  const location = useLocation();
+  const { title, location: tripLocation } = location.state;
 
   const { ref, inView } = useInView();
   const userId = useAppSelector((state) => state.auth.user?.id);
@@ -152,18 +156,19 @@ const Chatting = () => {
 
   return (
     <div className="fixed top-16 flex h-screen w-md flex-col bg-gray-200">
-      <header className="flex h-16 justify-between bg-blue-300 p-4">
+      <header className="flex h-16 items-center justify-between bg-blue-300 p-4">
         <Link to="/trip">
           <ArrowBackIcon />
         </Link>
-        <div className="text-xl">{userId}</div>
+        <div className="flex flex-col items-center">
+          <div className="text-xl">{title}</div>
+          <div className="text-md">{tripLocation}</div>
+        </div>
         <MenuRoundedIcon />
       </header>
       <main className="flex h-[calc(100vh-7rem)] flex-col">
-        {" "}
-        {/* 변경된 부분: flex, flex-col, h-screen */}
         <div
-          className="relative flex-grow overflow-y-auto p-4" // 변경된 부분: flex-grow, padding 등 불필요한 h-[34rem] 삭제
+          className="relative flex-grow overflow-y-auto p-4"
           ref={containerRef}
         >
           <div ref={ref} className="absolute top-40 h-1" />
@@ -171,11 +176,11 @@ const Chatting = () => {
             {messages.map((message) => {
               const isMyMessage = message.senderId === userId;
               return (
-                <div key={message.id} className="flex w-full flex-col">
+                <div key={message.id} className="mb-2 flex w-full flex-col">
                   <span
                     className={`mb-1 ${isMyMessage ? "ml-auto" : "mr-auto"}`}
                   >
-                    {message.senderId}
+                    {isMyMessage ? "" : message.nickname}
                   </span>
                   <div
                     className={`relative mb-1 w-fit max-w-3/4 rounded-xl p-3 ${
@@ -191,7 +196,7 @@ const Chatting = () => {
                   <span
                     className={`text-sm opacity-50 ${isMyMessage ? "ml-auto" : "mr-auto"}`}
                   >
-                    {message.sentAt}
+                    {formatDate(message.sentAt)}
                   </span>
                 </div>
               );
@@ -220,7 +225,7 @@ const Chatting = () => {
 
           <div className="relative w-full">
             <textarea
-              className="h-40 w-full resize-none bg-white p-4 pr-12 leading-5 outline-0" // 오른쪽 패딩 추가 (pr-12)
+              className="h-40 w-full resize-none bg-white p-4 pr-12 leading-5 outline-0"
               placeholder="메시지를 입력하세요..."
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}

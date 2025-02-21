@@ -22,6 +22,7 @@ export interface Message {
   id: number;
   roomId: number;
   senderId: number;
+  nickname: string;
   message: string;
   sentAt: string;
 }
@@ -30,22 +31,3 @@ export interface MessagesResponse {
   messages: Message[];
   nextPage: number | null;
 }
-
-interface GetMessagesParams {
-  pageParam?: number;
-  queryKey: (string | undefined)[];
-}
-
-export const getMessages = async ({
-  pageParam = 0, // ✅ 기본값 설정
-  queryKey,
-}: GetMessagesParams): Promise<MessagesResponse> => {
-  const [, roomId] = queryKey;
-  // ✅ pageParam을 사용하여 요청
-  const response = await api.get<MessagesResponse>(`/chatMessages/${roomId}`, {
-    params: {
-      page: pageParam,
-    },
-  });
-  return response.data;
-};

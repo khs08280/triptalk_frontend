@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 
 const ChatRoomLi = (chatRoom: ChatRoom) => {
   return (
-    <Link to={`/trip/${chatRoom.chatRoomId}`}>
+    <Link
+      to={`/trip/${chatRoom.chatRoomId}`}
+      state={{ title: chatRoom.title, location: chatRoom.location }}
+    >
       <li
         key={chatRoom.chatRoomId}
         className="flex w-full justify-between border-b-2 border-gray-300 bg-blue-200 p-4 py-8 transition-all hover:bg-blue-300"
