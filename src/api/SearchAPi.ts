@@ -1,6 +1,7 @@
+// api/SearchAPi.ts
 import api from "./api";
 
-interface SearchNaver {
+export interface SearchNaver {
   title: string;
   link: string;
   category: string;
@@ -26,11 +27,21 @@ export const searchNaver = async (
   if (!query) {
     return null;
   }
-  const response = await api.get("/search/naver", {
-    params: {
-      query,
-    },
-  });
+  try {
+    const response = await api.get<SearchNaverResponse>("/search/naver", {
+      params: {
+        query,
+      },
+    });
 
-  return response.data;
+    if (response.status !== 200) {
+      console.error("API 요청 실패:", response.status);
+      return null;
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("API 요청 중 오류 발생:", error);
+    return null;
+  }
 };

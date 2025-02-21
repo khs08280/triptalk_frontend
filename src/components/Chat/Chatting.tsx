@@ -155,7 +155,7 @@ const Chatting = () => {
   }, []);
 
   return (
-    <div className="fixed top-16 flex h-screen w-md flex-col bg-gray-200">
+    <div className="fixed top-16 flex h-screen w-sm flex-col bg-gray-200">
       <header className="flex h-16 items-center justify-between bg-blue-300 p-4">
         <Link to="/trip">
           <ArrowBackIcon />
@@ -164,7 +164,7 @@ const Chatting = () => {
           <div className="text-xl">{title}</div>
           <div className="text-md">{tripLocation}</div>
         </div>
-        <MenuRoundedIcon />
+        <MenuRoundedIcon className="cursor-pointer" />
       </header>
       <main className="flex h-[calc(100vh-7rem)] flex-col">
         <div
@@ -183,7 +183,7 @@ const Chatting = () => {
                     {isMyMessage ? "" : message.nickname}
                   </span>
                   <div
-                    className={`relative mb-1 w-fit max-w-3/4 rounded-xl p-3 ${
+                    className={`relative mb-1 w-fit max-w-3/4 rounded-xl p-3 py-1.5 ${
                       isMyMessage
                         ? "ml-auto bg-blue-300 before:absolute before:top-[10px] before:right-[-10px] before:rotate-[0deg] before:rounded-sm before:border-[12px] before:border-transparent before:border-t-blue-300 before:border-r-transparent before:border-l-transparent"
                         : "mr-auto bg-red-200 before:absolute before:top-[10px] before:left-[-10px] before:rotate-[0deg] before:rounded-sm before:border-[12px] before:border-transparent before:border-t-red-200 before:border-r-transparent before:border-l-transparent"

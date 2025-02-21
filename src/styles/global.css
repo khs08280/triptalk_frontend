@@ -13,11 +13,10 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 7px;
+  width: 5px;
   height: 20px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #e5e7eb; /* 스크롤바 막대 색상 */
-  border: 1px solid #9b6a2f; /* 스크롤바 막대 테두리 설정  */
+  background: #8ec5ff;
   border-radius: 12px 12px 12px 12px;
 }
