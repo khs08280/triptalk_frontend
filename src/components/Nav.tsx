@@ -1,18 +1,32 @@
 import api from "@/api/api";
 import { logoutState } from "@/features/auth/authSlice";
+import { clearCurrentChatRoom } from "@/features/auth/chatRoomSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Link, useNavigate } from "react-router-dom";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import { useState } from "react";
+import NotificationBox from "./NotificationBox";
 
 const Nav = () => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl); // Menu open 여부
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      // 1) 서버에 로그아웃 요청 → 쿠키 만료
       await api.post("/users/logout");
-      // 2) 클라이언트 전역 상태 리셋
+      dispatch(clearCurrentChatRoom());
       dispatch(logoutState());
       navigate("/");
     } catch (error) {
@@ -26,20 +40,32 @@ const Nav = () => {
         <span className="text-2xl font-bold">트립톡</span>
       </Link>
       <nav className="">
-        <ul className="flex w-sm justify-between">
-          <li className="text-white">a</li>
-          <li>b</li>
+        <ul className="relative flex w-sm justify-between">
+          {isLoggedIn && (
+            <>
+              <div onClick={handleClick}>
+                <NotificationsIcon color="primary" className="cursor-pointer" />
+              </div>
+              <NotificationBox // NotificationBox 추가
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+              />
+            </>
+          )}
+
+          <li>{user?.nickname}</li>
           <li>
             {isLoggedIn ? (
               <div
                 onClick={handleLogout}
-                className="text-lg transition-all hover:text-blue-400"
+                className="cursor-pointer text-lg transition-all hover:text-blue-400"
               >
                 로그아웃
               </div>
             ) : (
               <Link to={"/login"}>
-                <div className="text-lg transition-all hover:text-blue-400">
+                <div className="cursor-pointer text-lg transition-all hover:text-blue-400">
                   로그인
                 </div>
               </Link>

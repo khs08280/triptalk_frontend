@@ -8,6 +8,8 @@ import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import { Message, MessagesResponse } from "@/api/ChatApi";
 import { useInView } from "react-intersection-observer";
 import formatDate from "@/utils/formatData";
+import InvitationModal from "@components/InvitationModal";
+import { List, ListItemText } from "@mui/material";
 
 const MESSAGE_SIZE = 30;
 
@@ -20,6 +22,7 @@ const Chatting = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [nextCursor, setNextCursor] = useState<number | null>();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const location = useLocation();
   const { title, location: tripLocation } = location.state;
@@ -154,6 +157,10 @@ const Chatting = () => {
     }
   }, []);
 
+  const handleIsMenuOpen = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
+
   return (
     <div className="fixed top-16 flex h-screen w-sm flex-col bg-gray-200">
       <header className="flex h-16 items-center justify-between bg-blue-300 p-4">
@@ -164,7 +171,30 @@ const Chatting = () => {
           <div className="text-xl">{title}</div>
           <div className="text-md">{tripLocation}</div>
         </div>
-        <MenuRoundedIcon className="cursor-pointer" />
+        <div className="relative">
+          <div onClick={handleIsMenuOpen}>
+            <MenuRoundedIcon className="cursor-pointer" />
+          </div>
+          {isMenuOpen && (
+            <div
+              className="absolute left-0 z-20 mt-2 flex w-3xs flex-col rounded border border-gray-300 bg-white shadow-md" // 스타일 조정 (배경, 그림자, 위치 등)
+            >
+              <List className="flex flex-col space-y-2 p-4">
+                <h4 className="text-md">참가한 유저들 목록</h4>
+                <div className="pl-5">
+                  <ListItemText>유저 1</ListItemText>
+                  <ListItemText>유저 2</ListItemText>
+                  <ListItemText>유저 3</ListItemText>
+                  <ListItemText>유저 4</ListItemText>
+                </div>
+              </List>
+              <InvitationModal />
+              <div className="cursor-pointer px-4 py-2 hover:bg-gray-100">
+                여행 계획 및 채팅방 삭제
+              </div>
+            </div>
+          )}
+        </div>
       </header>
       <main className="flex h-[calc(100vh-7rem)] flex-col">
         <div

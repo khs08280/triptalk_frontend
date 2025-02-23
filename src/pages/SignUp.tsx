@@ -128,7 +128,7 @@ const SignUp = () => {
         </div>
         <button
           type="submit"
-          className="w-full rounded-lg bg-blue-500 py-2 text-white hover:bg-blue-600"
+          className="w-full cursor-pointer rounded-lg bg-blue-500 py-2 text-white hover:bg-blue-600"
         >
           {mutation.isPending ? "가입 중..." : "회원 가입"}
         </button>

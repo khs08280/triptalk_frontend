@@ -2,6 +2,7 @@ import { SearchNaver } from "@/api/SearchAPi";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import { Suspense, useState } from "react";
 import SearchDetail from "./SearchDetail";
+import { Box } from "@mui/material";
 interface SearchProps {
   key: number;
   item: SearchNaver;
@@ -16,8 +17,8 @@ const SearchLi = ({ item, key }: SearchProps) => {
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="flex w-6xl cursor-pointer items-center justify-between border-2 border-blue-200 bg-amber-200 p-4 transition-colors hover:bg-amber-300">
+    <Box className="flex flex-col items-center">
+      <div className="flex w-6xl items-center justify-between border-2 border-blue-200 bg-amber-200 p-4 transition-colors hover:bg-amber-300">
         <div className="flex flex-col">
           <div className="flex items-center">
             <span className="mr-5 text-2xl">{title}</span>
@@ -25,7 +26,10 @@ const SearchLi = ({ item, key }: SearchProps) => {
           </div>
           <span>{item.roadAddress}</span>
         </div>
-        <KeyboardArrowDownRoundedIcon onClick={toggleMap} />
+        <KeyboardArrowDownRoundedIcon
+          className="cursor-pointer"
+          onClick={toggleMap}
+        />
       </div>
       {isMapVisible && (
         <div className="flex items-center justify-center">
@@ -34,7 +38,7 @@ const SearchLi = ({ item, key }: SearchProps) => {
           </Suspense>
         </div>
       )}
-    </div>
+    </Box>
   );
 };
 
