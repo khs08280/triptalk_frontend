@@ -1,4 +1,5 @@
 import { searchNaver, SearchNaverResponse } from "@/api/SearchAPi";
+import { useAppSelector } from "@/store/hooks";
 import Chatting from "@components/Chat/Chatting";
 import Footer from "@components/Footer";
 import SearchLi from "@components/SearchLi";
@@ -10,6 +11,9 @@ const TripDetail = () => {
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] =
     useState<SearchNaverResponse | null>(null);
+  const isChatRoomOpen = useAppSelector(
+    (state) => state.chatroom.isChatRoomOpen,
+  );
 
   const handleSearch = useCallback(async (searchText: string) => {
     try {
@@ -47,11 +51,16 @@ const TripDetail = () => {
       handleSearchClick();
     }
   };
+  const getPaddingLeftClass = () => {
+    return isChatRoomOpen ? "pl-(--side-padding)" : "pl-0";
+  };
 
   return (
     <div className="flex pt-(--header-height)">
       <Chatting />
-      <div className="font-do flex min-h-screen grow-1 flex-col justify-between place-self-end bg-blue-400 pt-16 pl-[384px]">
+      <div
+        className={`font-do flex min-h-screen grow-1 flex-col justify-between place-self-end bg-blue-400 pt-16 ${getPaddingLeftClass()}`}
+      >
         <div className="flex flex-col items-center p-5">
           <div className="mb-10 flex h-10 rounded-2xl bg-amber-300 px-4">
             <input

@@ -1,3 +1,4 @@
+import { User } from "@/types";
 import api from "./api";
 
 export interface SignUpRequest {
@@ -37,12 +38,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   success: boolean;
   message: string;
-  data: {
-    id: number;
-    username: string;
-    nickname: string;
-    email: string;
-  };
+  data: User;
 }
 
 export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {

@@ -19,3 +19,10 @@ export interface NotificationResponse {
   message: string;
   data: Notification[];
 }
+
+export interface User {
+  id: number;
+  username: string;
+  nickname: string;
+  email: string;
+}

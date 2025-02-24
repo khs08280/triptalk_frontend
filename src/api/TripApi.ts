@@ -42,3 +42,13 @@ export const createTrip = async (
   }
   return response.data;
 };
+export interface DeleteTripResponse {
+  success: boolean;
+  message: string;
+  data: null;
+}
+
+export const deleteTrip = async (tripId: number | undefined) => {
+  const response = await api.delete<DeleteTripResponse>(`/trips/${tripId}`);
+  return response.data;
+};

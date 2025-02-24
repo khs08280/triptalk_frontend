@@ -7,6 +7,7 @@
   --font-noto-kr: "Noto Sans KR", sans-serif;
   --font-do: "Do Hyeon", sans-serif;
   --font-nanum: "Nanum Gothic", serif;
+  --side-padding: 24rem;
 }
 body {
   font-family: var(--font-nanum);

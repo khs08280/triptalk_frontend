@@ -16,12 +16,10 @@ const NotificationBox: React.FC<NotificationBoxProps> = ({
   onClose,
 }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const getInvitations = async () => {
-      setLoading(true);
       try {
         const response = await api.get<NotificationResponse>(`/invitations`);
         if (response.data.success) {
@@ -29,8 +27,6 @@ const NotificationBox: React.FC<NotificationBoxProps> = ({
         }
       } catch (error: any) {
         console.error("초대 불러오기 중 오류 발생:", error);
-      } finally {
-        setLoading(false);
       }
     };
     if (open) {

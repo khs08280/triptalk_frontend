@@ -3,13 +3,20 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
-import { Message, MessagesResponse } from "@/api/ChatApi";
+import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
+import {
+  ChatRoomUsersResponse,
+  getChatRoomUsers,
+  Message,
+  MessagesResponse,
+} from "@/api/ChatApi";
 import { useInView } from "react-intersection-observer";
 import formatDate from "@/utils/formatData";
-import InvitationModal from "@components/InvitationModal";
-import { List, ListItemText } from "@mui/material";
+import ChattingMenu from "./ChattingMenu";
+import { User } from "@/types";
+import { toggleChatRoomOpen } from "@/features/auth/chatRoomSlice";
 
 const MESSAGE_SIZE = 30;
 
@@ -22,7 +29,6 @@ const Chatting = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [nextCursor, setNextCursor] = useState<number | null>();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const location = useLocation();
   const { title, location: tripLocation } = location.state;
@@ -32,6 +38,28 @@ const Chatting = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
+
+  const dispatch = useAppDispatch();
+  const isChatRoomOpen = useAppSelector(
+    (state) => state.chatroom.isChatRoomOpen,
+  );
+
+  const [chatRoomUsers, setChatRoomUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const fetchChatRoomUsers = async () => {
+      try {
+        const response: ChatRoomUsersResponse = await getChatRoomUsers(roomId);
+        if (response.success) {
+          setChatRoomUsers(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching chatroom users:", error);
+      }
+    };
+
+    fetchChatRoomUsers();
+  }, [roomId]);
 
   useEffect(() => {
     const newSocket = io("wss://localhost:9093", {
@@ -157,124 +185,138 @@ const Chatting = () => {
     }
   }, []);
 
-  const handleIsMenuOpen = () => {
-    setIsMenuOpen((prev) => !prev);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null); // MUI Menu에 필요
+  const open = Boolean(anchorEl); // Menu open 여부
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
+  const ChatRoomToggleClick = () => {
+    dispatch(toggleChatRoomOpen());
+  };
   return (
-    <div className="fixed top-16 flex h-screen w-sm flex-col bg-gray-200">
-      <header className="flex h-16 items-center justify-between bg-blue-300 p-4">
-        <Link to="/trip">
-          <ArrowBackIcon />
-        </Link>
-        <div className="flex flex-col items-center">
-          <div className="text-xl">{title}</div>
-          <div className="text-md">{tripLocation}</div>
-        </div>
-        <div className="relative">
-          <div onClick={handleIsMenuOpen}>
-            <MenuRoundedIcon className="cursor-pointer" />
-          </div>
-          {isMenuOpen && (
+    <div className="relative flex h-screen pt-[--header-height]">
+      {isChatRoomOpen && (
+        <div className="fixed top-16 flex h-screen w-sm flex-col bg-gray-200">
+          <header className="flex h-16 items-center justify-between bg-blue-300 p-4">
+            <Link to="/trip">
+              <ArrowBackIcon />
+            </Link>
+            <div className="flex flex-col items-center">
+              <div className="text-xl">{title}</div>
+              <div className="text-md">{tripLocation}</div>
+            </div>
+            <div className="relative">
+              <div onClick={handleClick}>
+                <MenuRoundedIcon className="cursor-pointer" />
+              </div>
+              <ChattingMenu
+                users={chatRoomUsers}
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+              />
+            </div>
+          </header>
+          <main className="flex h-[calc(100vh-7rem)] flex-col">
             <div
-              className="absolute left-0 z-20 mt-2 flex w-3xs flex-col rounded border border-gray-300 bg-white shadow-md" // 스타일 조정 (배경, 그림자, 위치 등)
+              className="relative flex-grow overflow-y-auto p-4"
+              ref={containerRef}
             >
-              <List className="flex flex-col space-y-2 p-4">
-                <h4 className="text-md">참가한 유저들 목록</h4>
-                <div className="pl-5">
-                  <ListItemText>유저 1</ListItemText>
-                  <ListItemText>유저 2</ListItemText>
-                  <ListItemText>유저 3</ListItemText>
-                  <ListItemText>유저 4</ListItemText>
-                </div>
-              </List>
-              <InvitationModal />
-              <div className="cursor-pointer px-4 py-2 hover:bg-gray-100">
-                여행 계획 및 채팅방 삭제
+              <div ref={ref} className="absolute top-40 h-1" />
+              <div className="relative p-4">
+                {messages.map((message) => {
+                  const isMyMessage = message.senderId === userId;
+                  return (
+                    <div key={message.id} className="mb-2 flex w-full flex-col">
+                      <span
+                        className={`mb-1 ${isMyMessage ? "ml-auto" : "mr-auto"}`}
+                      >
+                        {isMyMessage ? "" : message.nickname}
+                      </span>
+                      <div
+                        className={`relative mb-1 w-fit max-w-3/4 rounded-xl p-3 py-1.5 ${
+                          isMyMessage
+                            ? "ml-auto bg-blue-300 before:absolute before:top-[10px] before:right-[-10px] before:rotate-[0deg] before:rounded-sm before:border-[12px] before:border-transparent before:border-t-blue-300 before:border-r-transparent before:border-l-transparent"
+                            : "mr-auto bg-red-200 before:absolute before:top-[10px] before:left-[-10px] before:rotate-[0deg] before:rounded-sm before:border-[12px] before:border-transparent before:border-t-red-200 before:border-r-transparent before:border-l-transparent"
+                        }`}
+                      >
+                        <div className="message-content break-words whitespace-pre-wrap text-gray-800">
+                          {message.message}
+                        </div>
+                      </div>
+                      <span
+                        className={`text-sm opacity-50 ${isMyMessage ? "ml-auto" : "mr-auto"}`}
+                      >
+                        {formatDate(message.sentAt)}
+                      </span>
+                    </div>
+                  );
+                })}
+
+                <div ref={messagesEndRef} />
               </div>
             </div>
-          )}
+            <div className="relative flex flex-col">
+              {showNewMessage && (
+                <button
+                  onClick={handleScrollToBottom}
+                  className="absolute -top-15 right-40 cursor-pointer rounded bg-blue-500 px-2 py-1 text-white"
+                >
+                  새 메시지 확인
+                </button>
+              )}
+              {showScrollButton && (
+                <button
+                  onClick={handleScrollToBottom}
+                  className="absolute -top-10 right-5 cursor-pointer rounded-full bg-blue-500 p-1 text-white opacity-90"
+                >
+                  <ArrowDownwardRoundedIcon />
+                </button>
+              )}
+
+              <div className="relative w-full">
+                <textarea
+                  className="h-40 w-full resize-none bg-white p-4 pr-12 leading-5 outline-0"
+                  placeholder="메시지를 입력하세요..."
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }
+                  }}
+                ></textarea>
+                <button
+                  className="absolute right-4 bottom-6 cursor-pointer rounded bg-blue-500 px-4 py-2 text-white"
+                  onClick={handleSendMessage}
+                >
+                  전송
+                </button>
+              </div>
+            </div>
+          </main>
+          <div
+            onClick={ChatRoomToggleClick}
+            className="absolute top-0 -right-10 cursor-pointer bg-white p-2"
+          >
+            <ChatRoundedIcon />
+          </div>
         </div>
-      </header>
-      <main className="flex h-[calc(100vh-7rem)] flex-col">
+      )}
+      {!isChatRoomOpen && (
         <div
-          className="relative flex-grow overflow-y-auto p-4"
-          ref={containerRef}
+          onClick={ChatRoomToggleClick}
+          className="absolute top-0 -right-10 cursor-pointer bg-white p-2"
         >
-          <div ref={ref} className="absolute top-40 h-1" />
-          <div className="relative p-4">
-            {messages.map((message) => {
-              const isMyMessage = message.senderId === userId;
-              return (
-                <div key={message.id} className="mb-2 flex w-full flex-col">
-                  <span
-                    className={`mb-1 ${isMyMessage ? "ml-auto" : "mr-auto"}`}
-                  >
-                    {isMyMessage ? "" : message.nickname}
-                  </span>
-                  <div
-                    className={`relative mb-1 w-fit max-w-3/4 rounded-xl p-3 py-1.5 ${
-                      isMyMessage
-                        ? "ml-auto bg-blue-300 before:absolute before:top-[10px] before:right-[-10px] before:rotate-[0deg] before:rounded-sm before:border-[12px] before:border-transparent before:border-t-blue-300 before:border-r-transparent before:border-l-transparent"
-                        : "mr-auto bg-red-200 before:absolute before:top-[10px] before:left-[-10px] before:rotate-[0deg] before:rounded-sm before:border-[12px] before:border-transparent before:border-t-red-200 before:border-r-transparent before:border-l-transparent"
-                    }`}
-                  >
-                    <div className="message-content break-words whitespace-pre-wrap text-gray-800">
-                      {message.message}
-                    </div>
-                  </div>
-                  <span
-                    className={`text-sm opacity-50 ${isMyMessage ? "ml-auto" : "mr-auto"}`}
-                  >
-                    {formatDate(message.sentAt)}
-                  </span>
-                </div>
-              );
-            })}
-
-            <div ref={messagesEndRef} />
-          </div>
+          <ChatRoundedIcon />
         </div>
-        <div className="relative flex flex-col">
-          {showNewMessage && (
-            <button
-              onClick={handleScrollToBottom}
-              className="absolute -top-15 right-40 cursor-pointer rounded bg-blue-500 px-2 py-1 text-white"
-            >
-              새 메시지 확인
-            </button>
-          )}
-          {showScrollButton && (
-            <button
-              onClick={handleScrollToBottom}
-              className="absolute -top-10 right-5 cursor-pointer rounded-full bg-blue-500 p-1 text-white opacity-90"
-            >
-              <ArrowDownwardRoundedIcon />
-            </button>
-          )}
-
-          <div className="relative w-full">
-            <textarea
-              className="h-40 w-full resize-none bg-white p-4 pr-12 leading-5 outline-0"
-              placeholder="메시지를 입력하세요..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSendMessage();
-                }
-              }}
-            ></textarea>
-            <button
-              className="absolute right-4 bottom-6 cursor-pointer rounded bg-blue-500 px-4 py-2 text-white"
-              onClick={handleSendMessage}
-            >
-              전송
-            </button>
-          </div>
-        </div>
-      </main>
+      )}
     </div>
   );
 };

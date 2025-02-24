@@ -4,6 +4,7 @@ import { RootState } from "@/store/store";
 import { InvitationRequestDto } from "@/types";
 import { Box, Modal, TextField, Typography, Button } from "@mui/material";
 import { useState, useEffect } from "react";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 interface User {
   id: number;
@@ -116,10 +117,16 @@ const InvitationModal = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box className="absolute top-[40%] left-[40%] flex h-auto w-sm flex-col border-2 border-blue-200 bg-white p-10 shadow">
-          <Typography id="modal-modal-title" variant="h6" component="h3">
-            초대하기
-          </Typography>
+        <Box className="absolute top-[40%] left-[40%] flex h-auto w-sm flex-col border-2 border-blue-200 bg-white p-10 py-5 shadow">
+          <div className="mb-5 flex items-center justify-between">
+            <Typography id="modal-modal-title" variant="h6" component="h3">
+              초대하기
+            </Typography>
+            <CloseRoundedIcon
+              onClick={handleClose}
+              className="cursor-pointer"
+            />
+          </div>
           <TextField
             id="outlined-basic"
             label="초대할 유저 닉네임 입력"

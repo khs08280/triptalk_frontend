@@ -1,13 +1,15 @@
 // src/store/chatRoomSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ChatRoom } from "@/api/ChatApi"; // ChatRoom 타입 import
+import { ChatRoom } from "@/api/ChatApi";
 
 interface ChatRoomState {
   currentChatRoom: ChatRoom | null;
+  isChatRoomOpen: boolean;
 }
 
 const initialState: ChatRoomState = {
   currentChatRoom: null,
+  isChatRoomOpen: true,
 };
 
 const chatRoomSlice = createSlice({
@@ -28,6 +30,9 @@ const chatRoomSlice = createSlice({
     clearCurrentChatRoom: (state) => {
       state.currentChatRoom = null;
     },
+    toggleChatRoomOpen: (state) => {
+      state.isChatRoomOpen = !state.isChatRoomOpen;
+    },
   },
 });
 
@@ -35,5 +40,6 @@ export const {
   setCurrentChatRoom,
   updateCurrentChatRoom,
   clearCurrentChatRoom,
+  toggleChatRoomOpen,
 } = chatRoomSlice.actions;
 export default chatRoomSlice.reducer;
