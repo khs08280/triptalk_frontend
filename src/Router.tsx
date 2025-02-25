@@ -5,7 +5,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import PublicRoute from "@components/PublicRoute";
 import TripCreate from "./pages/TripCreate";
-import MyHome from "./pages/MyHome";
+import MyPage from "./pages/MyHome";
 import TripLayout from "@components/TripLayout";
 import TripDetail from "./pages/TripDetail";
 
@@ -21,7 +21,7 @@ const Router = () => {
           <Route path="create" element={<TripCreate />} />
         </Route>
         <Route path="/trip/:roomId" element={<TripDetail />} />
-        <Route path="/myHome" element={<MyHome />} />
+        <Route path="/myPage" element={<MyPage />} />
       </Routes>
     </>
   );

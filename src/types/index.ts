@@ -26,3 +26,9 @@ export interface User {
   nickname: string;
   email: string;
 }
+
+export interface MenuProps {
+  anchorEl: null | HTMLElement; // prop 타입 정의
+  open: boolean;
+  onClose: () => void;
+}

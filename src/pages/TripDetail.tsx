@@ -58,6 +58,7 @@ const TripDetail = () => {
   return (
     <div className="flex pt-(--header-height)">
       <Chatting />
+      <div className="fixed top-[--header-height] left-(--side-padding) flex h-screen w-sm bg-white"></div>
       <div
         className={`font-do flex min-h-screen grow-1 flex-col justify-between place-self-end bg-blue-400 pt-16 ${getPaddingLeftClass()}`}
       >

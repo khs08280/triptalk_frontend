@@ -6,10 +6,12 @@ import { Link, useNavigate } from "react-router-dom";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useState } from "react";
 import NotificationBox from "./NotificationBox";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ProfileMenu from "./ProfileMenu";
 
 const Nav = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl); // Menu open 여부
+  const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
@@ -18,8 +20,21 @@ const Nav = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const [profileAnchorEl, setProfileAnchorEl] = useState<null | HTMLElement>(
+    null,
+  );
+  const profileOpen = Boolean(profileAnchorEl);
+
+  const handleProfileClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    setProfileAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileClose = () => {
+    setProfileAnchorEl(null);
+  };
+
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
-  const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -40,11 +55,15 @@ const Nav = () => {
         <span className="text-2xl font-bold">트립톡</span>
       </Link>
       <nav className="">
-        <ul className="relative flex w-sm justify-between">
+        <ul className="relative flex items-center space-x-4">
           {isLoggedIn && (
             <>
               <div onClick={handleClick}>
-                <NotificationsIcon color="primary" className="cursor-pointer" />
+                <NotificationsIcon
+                  fontSize="large"
+                  color="primary"
+                  className="cursor-pointer"
+                />
               </div>
               <NotificationBox // NotificationBox 추가
                 anchorEl={anchorEl}
@@ -53,24 +72,28 @@ const Nav = () => {
               />
             </>
           )}
-
-          <li>{user?.nickname}</li>
-          <li>
-            {isLoggedIn ? (
-              <div
-                onClick={handleLogout}
-                className="cursor-pointer text-lg transition-all hover:text-blue-400"
-              >
-                로그아웃
+          {isLoggedIn ? (
+            <>
+              <div onClick={handleProfileClick}>
+                <AccountCircleIcon
+                  fontSize="large"
+                  className="cursor-pointer"
+                />
               </div>
-            ) : (
-              <Link to={"/login"}>
-                <div className="cursor-pointer text-lg transition-all hover:text-blue-400">
-                  로그인
-                </div>
-              </Link>
-            )}
-          </li>
+              <ProfileMenu
+                anchorEl={profileAnchorEl}
+                open={profileOpen}
+                onClose={handleProfileClose}
+                handleLogout={handleLogout}
+              />
+            </>
+          ) : (
+            <Link to={"/login"}>
+              <div className="cursor-pointer text-lg transition-all hover:text-blue-400">
+                로그인
+              </div>
+            </Link>
+          )}
         </ul>
       </nav>
     </header>

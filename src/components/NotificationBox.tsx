@@ -1,20 +1,10 @@
 import api from "@/api/api";
-import { NotificationResponse, Notification } from "@/types"; // 타입 import 경로 확인
+import { NotificationResponse, Notification, MenuProps } from "@/types"; // 타입 import 경로 확인
 import { Menu, Button } from "@mui/material"; // 필요한 컴포넌트 import
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface NotificationBoxProps {
-  anchorEl: null | HTMLElement; // prop 타입 정의
-  open: boolean;
-  onClose: () => void;
-}
-
-const NotificationBox: React.FC<NotificationBoxProps> = ({
-  anchorEl,
-  open,
-  onClose,
-}) => {
+const NotificationBox: React.FC<MenuProps> = ({ anchorEl, open, onClose }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const navigate = useNavigate();
 
