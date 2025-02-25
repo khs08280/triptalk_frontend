@@ -3,6 +3,7 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import { Suspense, useState } from "react";
 import SearchDetail from "./SearchDetail";
 import { Box } from "@mui/material";
+import ScheduleCreateModal from "./ScheduleCreateModal";
 interface SearchProps {
   key: number;
   item: SearchNaver;
@@ -26,10 +27,13 @@ const SearchLi = ({ item, key }: SearchProps) => {
           </div>
           <span>{item.roadAddress}</span>
         </div>
-        <KeyboardArrowDownRoundedIcon
-          className="cursor-pointer"
-          onClick={toggleMap}
-        />
+        <div className="flex">
+          <ScheduleCreateModal />
+          <KeyboardArrowDownRoundedIcon
+            className="cursor-pointer"
+            onClick={toggleMap}
+          />
+        </div>
       </div>
       {isMapVisible && (
         <div className="flex items-center justify-center">

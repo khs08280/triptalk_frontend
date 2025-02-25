@@ -1,3 +1,4 @@
+import { Trip, Visibility } from "@/types";
 import api from "./api";
 
 export interface TripFormValues {
@@ -8,25 +9,16 @@ export interface TripFormValues {
   visibility: Visibility;
 }
 
-export enum Visibility {
-  PUBLIC = "PUBLIC",
-  PRIVATE = "PRIVATE",
-}
-
 export interface TripResponse {
   success: boolean;
   message: string;
-  data: {
-    id: number;
-    title: string;
-    startDate: string;
-    endDate: string;
-    location: string;
-    visibility: Visibility;
-    creatorNickname: string;
-    createdAt: string;
-    updatedAt: string;
-  };
+  data: Trip;
+}
+
+export interface DeleteTripResponse {
+  success: boolean;
+  message: string;
+  data: null;
 }
 
 export const createTrip = async (
@@ -42,11 +34,12 @@ export const createTrip = async (
   }
   return response.data;
 };
-export interface DeleteTripResponse {
-  success: boolean;
-  message: string;
-  data: null;
-}
+
+export const getTripData = async (tripId: number | undefined) => {
+  const response = await api.get<TripResponse>(`/trips/${tripId}`);
+  console.log(response.data);
+  return response.data;
+};
 
 export const deleteTrip = async (tripId: number | undefined) => {
   const response = await api.delete<DeleteTripResponse>(`/trips/${tripId}`);

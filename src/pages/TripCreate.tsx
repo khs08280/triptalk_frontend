@@ -10,14 +10,10 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import {
-  createTrip,
-  TripFormValues,
-  TripResponse,
-  Visibility,
-} from "@/api/TripApi";
+import { createTrip, TripFormValues, TripResponse } from "@/api/TripApi";
 import { AxiosError } from "axios";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { Visibility } from "@/types";
 
 const TripCreate = () => {
   const {

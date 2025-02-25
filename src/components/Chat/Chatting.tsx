@@ -13,7 +13,7 @@ import {
   MessagesResponse,
 } from "@/api/ChatApi";
 import { useInView } from "react-intersection-observer";
-import formatDate from "@/utils/formatData";
+import { formatChatDate } from "@/utils/formatDate";
 import ChattingMenu from "./ChattingMenu";
 import { User } from "@/types";
 import { toggleChatRoomOpen } from "@/features/auth/chatRoomSlice";
@@ -252,7 +252,7 @@ const Chatting = () => {
                       <span
                         className={`text-sm opacity-50 ${isMyMessage ? "ml-auto" : "mr-auto"}`}
                       >
-                        {formatDate(message.sentAt)}
+                        {formatChatDate(message.sentAt)}
                       </span>
                     </div>
                   );

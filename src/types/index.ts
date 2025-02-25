@@ -32,3 +32,19 @@ export interface MenuProps {
   open: boolean;
   onClose: () => void;
 }
+export enum Visibility {
+  PUBLIC = "PUBLIC",
+  PRIVATE = "PRIVATE",
+}
+
+export interface Trip {
+  id: number;
+  title: string;
+  startDate: string[];
+  endDate: string[];
+  location: string;
+  visibility: Visibility;
+  creatorNickname: string;
+  createdAt: string;
+  updatedAt: string;
+}

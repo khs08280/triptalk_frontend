@@ -2,6 +2,7 @@ import { searchNaver, SearchNaverResponse } from "@/api/SearchAPi";
 import { useAppSelector } from "@/store/hooks";
 import Chatting from "@components/Chat/Chatting";
 import Footer from "@components/Footer";
+import Schedule from "@components/Schedule";
 import SearchLi from "@components/SearchLi";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import { useQuery } from "@tanstack/react-query";
@@ -58,7 +59,7 @@ const TripDetail = () => {
   return (
     <div className="flex pt-(--header-height)">
       <Chatting />
-      <div className="fixed top-[--header-height] left-(--side-padding) flex h-screen w-sm bg-white"></div>
+      <Schedule />
       <div
         className={`font-do flex min-h-screen grow-1 flex-col justify-between place-self-end bg-blue-400 pt-16 ${getPaddingLeftClass()}`}
       >
