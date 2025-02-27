@@ -28,7 +28,7 @@ const SearchLi = ({ item, key }: SearchProps) => {
           <span>{item.roadAddress}</span>
         </div>
         <div className="flex">
-          <ScheduleCreateModal />
+          <ScheduleCreateModal selectName={item.title} />
           <KeyboardArrowDownRoundedIcon
             className="cursor-pointer"
             onClick={toggleMap}

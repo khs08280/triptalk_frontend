@@ -5,7 +5,7 @@ import Footer from "@components/Footer";
 const Trip = () => {
   const isChatRoomOpen = useAppSelector(
     (state) => state.chatroom.isChatRoomOpen,
-  ); // Redux에서 상태 가져오기
+  );
 
   const getPaddingLeftClass = () => {
     return isChatRoomOpen ? "pl-(--side-padding)" : "pl-0";

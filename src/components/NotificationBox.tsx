@@ -1,10 +1,20 @@
 import api from "@/api/api";
-import { NotificationResponse, Notification, MenuProps } from "@/types"; // 타입 import 경로 확인
+import { NotificationResponse, Notification } from "@/types"; // 타입 import 경로 확인
 import { Menu, Button } from "@mui/material"; // 필요한 컴포넌트 import
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-const NotificationBox: React.FC<MenuProps> = ({ anchorEl, open, onClose }) => {
+interface MenuProps {
+  anchorEl: null | HTMLElement; // prop 타입 정의
+  open: boolean;
+  onClose: () => void;
+  setNotificationCount: (count: number) => void;
+}
+const NotificationBox: React.FC<MenuProps> = ({
+  anchorEl,
+  open,
+  onClose,
+  setNotificationCount,
+}) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const navigate = useNavigate();
 
@@ -14,6 +24,7 @@ const NotificationBox: React.FC<MenuProps> = ({ anchorEl, open, onClose }) => {
         const response = await api.get<NotificationResponse>(`/invitations`);
         if (response.data.success) {
           setNotifications(response.data.data);
+          setNotificationCount(response.data.data.length);
         }
       } catch (error: any) {
         console.error("초대 불러오기 중 오류 발생:", error);

@@ -1,6 +1,6 @@
 import { Box, Modal, TextField, Typography, Button } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import { useState, ChangeEvent } from "react"; // Import ChangeEvent
+import { useState, ChangeEvent, useEffect } from "react"; // Import ChangeEvent
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
@@ -9,8 +9,19 @@ import "dayjs/locale/ko";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAppSelector } from "@/store/hooks";
+import { useMutation } from "@tanstack/react-query";
+import {
+  createSchedule,
+  ScheduleForm,
+  ScheduleResponse,
+} from "@/api/ScheduleApi";
+import { AxiosError } from "axios";
 
-const ScheduleCreateModal = () => {
+interface SelectProps {
+  selectName?: string;
+}
+
+const ScheduleCreateModal = ({ selectName }: SelectProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -23,6 +34,13 @@ const ScheduleCreateModal = () => {
   const tripId = useAppSelector(
     (state) => state.chatroom.currentChatRoom?.tripId,
   );
+
+  useEffect(() => {
+    if (selectName != undefined) {
+      const ss = selectName.replace(/<[^>]*>/g, "");
+      setName(ss);
+    }
+  }, []);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,14 +57,22 @@ const ScheduleCreateModal = () => {
   };
 
   const handleSubmit = () => {
-    const scheduleData = {
-      tripId: tripId,
+    if (tripId === undefined) {
+      alert("tripId가 유효하지 않습니다."); // 또는 적절한 에러 처리
+      return;
+    }
+    const scheduleData: ScheduleForm = {
+      tripId,
       date: date ? date.format("YYYY-MM-DD") : null,
-      name: name,
+      name,
       startTime: startTime ? startTime.format("HH:mm") : null,
       endTime: endTime ? endTime.format("HH:mm") : null,
-      memo: memo,
+      memo,
     };
+    if (tripId === undefined) {
+      alert("tripId가 유효하지 않습니다."); // 또는 적절한 에러 처리
+      return;
+    }
     if (!scheduleData.date) {
       alert("날짜(date)는 필수 값입니다.");
       return;
@@ -63,31 +89,19 @@ const ScheduleCreateModal = () => {
       alert("메모가 너무 깁니다.");
       return;
     }
+    mutation.mutate(scheduleData);
 
     console.log("Sending data:", scheduleData);
-    // Example using fetch (replace with your actual API endpoint):
-    /*
-    fetch('/api/schedules', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(scheduleData),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
-        handleClose(); // Close the modal on success
-        // Optionally, refresh the schedule list or show a success message
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        // Handle errors (e.g., show an error message to the user)
-    });
-    */
-
-    // handleClose(); // Moved inside the handleSubmit, but keep it commented out for now
   };
+  const mutation = useMutation<ScheduleResponse, AxiosError, ScheduleForm>({
+    mutationFn: async (scheduleData) => {
+      return createSchedule(scheduleData);
+    },
+    onSuccess: (data) => {
+      console.log("성공적으로 일정 생성:", data);
+      handleClose();
+    },
+  });
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">

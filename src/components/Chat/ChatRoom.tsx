@@ -36,11 +36,11 @@ const ChatRoom = () => {
   return (
     <div className="flex h-screen pt-[--header-height]">
       {isChatRoomOpen && (
-        <div className="fixed top-16 h-screen w-sm bg-green-500 p-4">
+        <div className="fixed top-16 h-screen w-sm bg-red-200 p-4">
           <div className="mb-5 text-2xl">채팅방 목록</div>
           <div className="flex justify-center">
             <Link
-              to="/create"
+              to="create"
               className="flex w-full items-center rounded border-2 border-blue-600 bg-white px-4 py-2 hover:bg-blue-200"
             >
               <ControlPointRoundedIcon className="mr-2" />

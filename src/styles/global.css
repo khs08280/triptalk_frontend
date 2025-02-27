@@ -8,6 +8,7 @@
   --font-do: "Do Hyeon", sans-serif;
   --font-nanum: "Nanum Gothic", serif;
   --side-padding: 24rem;
+  --side-padding-double: 48rem;
 }
 body {
   font-family: var(--font-nanum);

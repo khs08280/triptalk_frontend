@@ -203,7 +203,10 @@ const Chatting = () => {
       {isChatRoomOpen && (
         <div className="fixed top-16 flex h-screen w-sm flex-col bg-gray-200">
           <header className="flex h-16 items-center justify-between bg-blue-300 p-4">
-            <Link to="/trip">
+            <Link
+              className="rounded-sm p-1 transition-colors hover:bg-blue-400"
+              to="/trip"
+            >
               <ArrowBackIcon />
             </Link>
             <div className="flex flex-col items-center">
@@ -211,7 +214,10 @@ const Chatting = () => {
               <div className="text-md">{tripLocation}</div>
             </div>
             <div className="relative">
-              <div onClick={handleClick}>
+              <div
+                className="rounded-sm p-1 transition-colors hover:bg-blue-400"
+                onClick={handleClick}
+              >
                 <MenuRoundedIcon className="cursor-pointer" />
               </div>
               <ChattingMenu

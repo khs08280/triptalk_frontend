@@ -103,3 +103,21 @@ export function getDatesBetween(startDate: string, endDate: string): string[] {
 
   return dates;
 }
+export function formatTime(timeArray: number[]) {
+  if (!Array.isArray(timeArray) || timeArray.length !== 2) {
+    return "Invalid input"; // 입력값이 배열이 아니거나, 길이가 2가 아니면 에러 처리
+  }
+
+  let hour = timeArray[0];
+  const minute = timeArray[1];
+
+  if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+    return "Invalid time"; // 유효하지 않은 시간/분 범위
+  }
+
+  const period = hour < 12 ? "오전" : "오후"; // 오전/오후 판별
+  const formattedHour = hour % 12 === 0 ? 12 : hour % 12; // 12시간제로 변환 (0시는 12시로)
+  const formattedMinute = minute.toString().padStart(2, "0"); // 분을 두 자리 문자열로 (0~9분 앞에 0 붙임)
+
+  return `${period} ${formattedHour}시 ${formattedMinute}분`;
+}

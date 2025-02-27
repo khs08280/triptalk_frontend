@@ -14,7 +14,6 @@ export default function DateTabs({ date, setDate, dates }: DateProps) {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setDate(dates[newValue]);
-    console.log(dates[newValue]);
   };
 
   return (

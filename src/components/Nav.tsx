@@ -8,9 +8,11 @@ import { useState } from "react";
 import NotificationBox from "./NotificationBox";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ProfileMenu from "./ProfileMenu";
+import { Badge } from "@mui/material";
 
 const Nav = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [notificationCount, setNotificationCount] = useState(0);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -50,7 +52,7 @@ const Nav = () => {
   };
 
   return (
-    <header className="fixed top-0 flex h-16 w-full items-center justify-between bg-amber-300 px-12">
+    <header className="fixed top-0 flex h-16 w-full items-center justify-between bg-blue-200 px-12">
       <Link to={"/"}>
         <span className="text-2xl font-bold">트립톡</span>
       </Link>
@@ -59,16 +61,24 @@ const Nav = () => {
           {isLoggedIn && (
             <>
               <div onClick={handleClick}>
-                <NotificationsIcon
-                  fontSize="large"
+                <Badge
+                  badgeContent={
+                    notificationCount > 0 ? notificationCount : null
+                  }
                   color="primary"
-                  className="cursor-pointer"
-                />
+                >
+                  <NotificationsIcon
+                    fontSize="large"
+                    color="primary"
+                    className="cursor-pointer"
+                  />
+                </Badge>
               </div>
-              <NotificationBox // NotificationBox 추가
+              <NotificationBox
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
+                setNotificationCount={setNotificationCount}
               />
             </>
           )}

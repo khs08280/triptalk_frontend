@@ -53,7 +53,7 @@ const TripDetail = () => {
     }
   };
   const getPaddingLeftClass = () => {
-    return isChatRoomOpen ? "pl-(--side-padding)" : "pl-0";
+    return isChatRoomOpen ? "pl-(--side-padding-double)" : "pl-0";
   };
 
   return (

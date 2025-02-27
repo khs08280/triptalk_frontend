@@ -28,7 +28,7 @@ export interface User {
 }
 
 export interface MenuProps {
-  anchorEl: null | HTMLElement; // prop 타입 정의
+  anchorEl: null | HTMLElement;
   open: boolean;
   onClose: () => void;
 }
