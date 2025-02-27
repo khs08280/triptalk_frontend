@@ -12,7 +12,7 @@ interface DateProps {
 export default function DateTabs({ date, setDate, dates }: DateProps) {
   const currentValue = dates.indexOf(date) > -1 ? dates.indexOf(date) : 0;
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setDate(dates[newValue]);
   };
 
