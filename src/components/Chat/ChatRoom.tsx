@@ -20,6 +20,7 @@ const ChatRoom = () => {
   } = useQuery<ChatRoomResponse, Error>({
     queryKey: ["chatList"],
     queryFn: getChatRooms,
+    enabled: false,
   });
   if (isLoading) {
     return <div>Loading...</div>;
