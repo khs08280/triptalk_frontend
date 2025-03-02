@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://localhost:8443/api/v1",
+  baseURL: "https://triptalk-server.shop/api/v1",
   withCredentials: true, // 쿠키 자동 전송
 });
 
