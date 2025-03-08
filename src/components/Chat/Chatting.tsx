@@ -64,6 +64,7 @@ const Chatting = () => {
   useEffect(() => {
     const newSocket = io("wss://triptalk-server.shop", {
       withCredentials: true,
+      path: "/socket.io/",
       transports: ["websocket", "polling"],
     });
 
