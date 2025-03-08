@@ -62,7 +62,7 @@ const Chatting = () => {
   }, [roomId]);
 
   useEffect(() => {
-    const newSocket = io("wss://localhost:9093", {
+    const newSocket = io("wss://triptalk-server.shop", {
       withCredentials: true,
       transports: ["websocket", "polling"],
     });

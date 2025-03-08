@@ -40,7 +40,9 @@ const TripCreate = () => {
     },
     onSuccess: (data) => {
       console.log(data);
-      navigate(`/trip/${data.data.id}`);
+      navigate(`/trip/${data.data.id}`, {
+        state: { title: data.data.title, location: data.data.location },
+      });
       console.log("성공적으로 여행 생성:", data);
     },
   });
